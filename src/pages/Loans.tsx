@@ -465,6 +465,7 @@ export default function Loans() {
 
   return (
     <Layout>
+       <div className="my-6">
       <PageHeader
         title="Loan Management"
         description="Manage member and outsider loans"
@@ -682,6 +683,7 @@ export default function Loans() {
           <p className="text-muted-foreground">No loans found</p>
         </div>
       )}
+      </div>
     </Layout>
   );
 }

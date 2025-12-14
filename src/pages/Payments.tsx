@@ -440,6 +440,7 @@ export default function Payments() {
 
   return (
     <Layout>
+       <div className="my-6">
       <PageHeader
         title="Loan Payments"
         description="Track and record loan repayments"
@@ -601,6 +602,7 @@ export default function Payments() {
         data={filteredPayments}
         emptyMessage="No payments recorded yet"
       />
+      </div>
     </Layout>
   );
 }

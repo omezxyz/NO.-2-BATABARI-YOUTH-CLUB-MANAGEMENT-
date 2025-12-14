@@ -314,6 +314,7 @@ export default function Members() {
 
   return (
     <Layout>
+       <div className="my-6">
       <PageHeader
         title="Members"
         description="Manage club members"
@@ -457,6 +458,7 @@ export default function Members() {
           <p className="text-muted-foreground">No members found</p>
         </div>
       )}
+      </div>
     </Layout>
   );
 }
