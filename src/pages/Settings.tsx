@@ -248,7 +248,7 @@ export default function Settings() {
             <div className="space-y-2 text-sm text-muted-foreground">
               <p><strong>No. 2 Batabari Youth Club</strong></p>
               <p>Collection Management System v1.0</p>
-              <p>Collections started from January 2023</p>
+              <p>Collections started from January 2024</p>
             </div>
           </CardContent>
         </Card>

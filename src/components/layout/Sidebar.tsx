@@ -49,9 +49,9 @@ export function Sidebar() {
       )}>
         <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-background/70 backdrop-blur-xl border border-border/50 shadow-xl">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Building2 className="h-4 w-4 text-primary-foreground" />
-            </div>
+        <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold shadow">
+          <img src="logo.png" alt="" />
+        </div>
             <span className="text-sm font-bold text-foreground">No 2 Batabari</span>
           </div>
           <button
@@ -85,8 +85,8 @@ export function Sidebar() {
           {/* Logo */}
           <div className="flex items-center justify-between px-6 py-6 border-b border-sidebar-border">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <Building2 className="h-6 w-6 text-primary-foreground" />
+              <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold shadow">
+              <img src="logo.png" alt="" />
               </div>
               <div>
                 <h1 className="text-lg font-bold text-sidebar-foreground">No. 2 Batabari</h1>

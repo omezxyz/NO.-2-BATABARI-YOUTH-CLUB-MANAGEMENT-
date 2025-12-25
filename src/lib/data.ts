@@ -66,7 +66,7 @@ import { MonthYear } from '@/types';
 // Generate months from January 2023 to current date
 export const generateMonthsFromStart = (): MonthYear[] => {
   const months: MonthYear[] = [];
-  const startDate = new Date(2023, 0, 1); // January 2023
+  const startDate = new Date(2024, 0, 1); // January 2024
   const currentDate = new Date();
   
   const monthNames = [
