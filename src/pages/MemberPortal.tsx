@@ -1,19 +1,14 @@
-import { useState, useMemo } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   User,
   Calendar,
@@ -21,21 +16,17 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle,
-} from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
-import {
-  mapDbMember,
-  mapDbLoan,
-  mapDbCollection,
-} from '@/types';
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { mapDbMember, mapDbLoan, mapDbCollection } from "@/types";
 import {
   generateMonthsFromStart,
   calculateInterest,
   formatCurrency,
   formatDate,
-} from '@/lib/data';
-import { Link } from 'react-router-dom';
+} from "@/lib/data";
+import { Link } from "react-router-dom";
 
 /* ---------------- NAVBAR ---------------- */
 const Navbar = () => (
@@ -52,30 +43,30 @@ const Navbar = () => (
       </div>
 
       <Link to="/auth">
-  <Badge
-    variant="outline"
-    className="hidden sm:block cursor-pointer hover:bg-primary/10 transition"
-  >
-    Admin
-  </Badge>
-</Link>
+        <Badge
+          variant="outline"
+          className="hidden sm:block cursor-pointer hover:bg-primary/10 transition"
+        >
+          Admin
+        </Badge>
+      </Link>
     </div>
   </header>
 );
 
 /* ---------------- MAIN ---------------- */
 const MemberPortal = () => {
-  const [selectedMemberId, setSelectedMemberId] = useState('');
+  const [selectedMemberId, setSelectedMemberId] = useState("");
 
   /* MEMBERS */
   const { data: members = [] } = useQuery({
-    queryKey: ['members-public'],
+    queryKey: ["members-public"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('members')
-        .select('*')
-        .eq('status', 'active')
-        .order('name');
+        .from("members")
+        .select("*")
+        .eq("status", "active")
+        .order("name");
       if (error) throw error;
       return data.map(mapDbMember);
     },
@@ -83,15 +74,15 @@ const MemberPortal = () => {
 
   /* COLLECTIONS */
   const { data: collections = [] } = useQuery({
-    queryKey: ['collections-public', selectedMemberId],
+    queryKey: ["collections-public", selectedMemberId],
     queryFn: async () => {
       if (!selectedMemberId) return [];
       const { data, error } = await supabase
-        .from('monthly_collections')
-        .select('*')
-        .eq('member_id', selectedMemberId)
-        .order('year', { ascending: false })
-        .order('month', { ascending: false });
+        .from("monthly_collections")
+        .select("*")
+        .eq("member_id", selectedMemberId)
+        .order("year", { ascending: false })
+        .order("month", { ascending: false });
       if (error) throw error;
       return data.map(mapDbCollection);
     },
@@ -100,34 +91,34 @@ const MemberPortal = () => {
 
   /* LOANS */
   const { data: loans = [] } = useQuery({
-    queryKey: ['loans-public', selectedMemberId],
+    queryKey: ["loans-public", selectedMemberId],
     queryFn: async () => {
       if (!selectedMemberId) return [];
       const { data, error } = await supabase
-        .from('loans')
-        .select('*')
-        .eq('member_id', selectedMemberId)
-        .order('created_at', { ascending: false });
+        .from("loans")
+        .select("*")
+        .eq("member_id", selectedMemberId)
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data.map(mapDbLoan);
     },
     enabled: !!selectedMemberId,
   });
 
-  const selectedMember = members.find(m => m.id === selectedMemberId);
+  const selectedMember = members.find((m) => m.id === selectedMemberId);
   const allMonths = generateMonthsFromStart();
 
   /* PENDING MONTHS */
   const pendingMonths = useMemo(() => {
-    const paid = new Set(collections.map(c => `${c.year}-${c.month}`));
-    return allMonths.filter(m => !paid.has(`${m.year}-${m.month}`));
+    const paid = new Set(collections.map((c) => `${c.year}-${c.month}`));
+    return allMonths.filter((m) => !paid.has(`${m.year}-${m.month}`));
   }, [collections, allMonths]);
 
   /* ACTIVE LOANS WITH DETAILS */
   const activeLoans = useMemo(() => {
     return loans
-      .filter(l => l.status === 'active')
-      .map(l => {
+      .filter((l) => l.status === "active")
+      .map((l) => {
         const remaining =
           l.principalAmount - (l.totalPaid - l.totalInterestPaid);
 
@@ -138,8 +129,7 @@ const MemberPortal = () => {
         );
 
         const daysElapsed = Math.floor(
-          (Date.now() - new Date(l.startDate).getTime()) /
-            (1000 * 60 * 60 * 24)
+          (Date.now() - new Date(l.startDate).getTime()) / (1000 * 60 * 60 * 24)
         );
 
         return {
@@ -168,7 +158,7 @@ const MemberPortal = () => {
               <SelectValue placeholder="Select your name..." />
             </SelectTrigger>
             <SelectContent>
-              {members.map(m => (
+              {members.map((m) => (
                 <SelectItem key={m.id} value={m.id}>
                   {m.name}
                 </SelectItem>
@@ -200,17 +190,33 @@ const MemberPortal = () => {
                     {selectedMember?.name}
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Member since {formatDate(selectedMember?.createdAt || '')}
+                    Member since {formatDate(selectedMember?.createdAt || "")}
                   </p>
                 </div>
 
                 <div className="flex gap-3">
-                  <div className="bg-destructive/10 rounded-lg px-4 py-2 text-center">
-                    <p className="text-xs text-muted-foreground">Collection Due</p>
-                    <p className="font-bold text-destructive">
-                      {formatCurrency(totalPendingCollection)}
-                    </p>
+                  <div className="flex gap-3">
+                    {totalPendingCollection > 0 ? (
+                      <div className="bg-destructive/10 rounded-lg px-4 py-2 text-center">
+                        <p className="text-xs text-muted-foreground">
+                          Collection Due
+                        </p>
+                        <p className="font-bold text-destructive">
+                          {formatCurrency(totalPendingCollection)}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-100 dark:bg-emerald-900/30 rounded-lg px-4 py-2 text-center">
+                        <p className="text-xs text-muted-foreground">
+                          Collections Status
+                        </p>
+                        <p className="font-bold text-sm text-gray-600">
+                          All Paid (Till Dec 2025)
+                        </p>
+                      </div>
+                    )}
                   </div>
+
                   <div className="bg-warning/10 rounded-lg px-4 py-2 text-center">
                     <p className="text-xs text-muted-foreground">Loan Due</p>
                     <p className="font-bold text-warning">
@@ -220,7 +226,74 @@ const MemberPortal = () => {
                 </div>
               </CardContent>
             </Card>
+            {/* LOAN DETAILS */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  Active Loans ({activeLoans.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {activeLoans.map((loan) => (
+                  <div
+                    key={loan.id}
+                    className="bg-muted/50 rounded-lg p-4 space-y-3"
+                  >
+                    <div className="flex justify-between">
+                      <p className="font-semibold">
+                        {formatCurrency(loan.principalAmount)}
+                      </p>
+                      <Badge>{loan.interestRate}% / month</Badge>
+                    </div>
 
+                    <Separator />
+
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">Start Date</p>
+                        <p>{formatDate(loan.startDate)}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Days Elapsed</p>
+                        <p>{loan.daysElapsed}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Total Paid</p>
+                        <p className="text-success">
+                          {formatCurrency(loan.totalPaid)}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">
+                          Remaining Principal
+                        </p>
+                        <p>{formatCurrency(loan.remainingPrincipal)}</p>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div className="flex justify-between bg-card p-3 rounded">
+                      <span className="flex items-center gap-2 text-sm">
+                        <TrendingUp className="h-4 w-4 text-warning" />
+                        Pending Interest
+                      </span>
+                      <span className="font-semibold text-warning">
+                        {formatCurrency(loan.pendingInterest)}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between bg-destructive/10 p-3 rounded">
+                      <span className="font-medium">Total Due</span>
+                      <span className="font-bold text-destructive">
+                        {formatCurrency(loan.totalDue)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
             {/* GRID */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* COLLECTION STATUS */}
@@ -239,7 +312,7 @@ const MemberPortal = () => {
                       Pending ({pendingMonths.length})
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {pendingMonths.map(m => (
+                      {pendingMonths.map((m) => (
                         <Badge key={m.label} variant="destructive">
                           {m.label}
                         </Badge>
@@ -249,109 +322,42 @@ const MemberPortal = () => {
 
                   <Separator />
 
-                 {/* PAID */}
-<div>
-  <div className="flex items-center justify-between">
-    <p className="flex items-center gap-2 font-medium">
-      <CheckCircle className="h-4 w-4 text-success" />
-      Paid ({collections.length})
-    </p>
+                  {/* PAID */}
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <p className="flex items-center gap-2 font-medium">
+                        <CheckCircle className="h-4 w-4 text-success" />
+                        Paid ({collections.length})
+                      </p>
 
-    {collections.length > 12 && (
-      <button
-        onClick={() => setShowAllPaid(prev => !prev)}
-        className="text-xs font-medium text-primary hover:underline"
-      >
-        {showAllPaid ? 'Show less' : 'Show all'}
-      </button>
-    )}
-  </div>
-
-  <div className="flex flex-wrap gap-2 mt-2">
-    {(showAllPaid ? collections : collections.slice(0, 12)).map(c => (
-      <Badge
-        key={c.id}
-        className="bg-success/10 text-success border-success/20"
-      >
-        {
-          allMonths.find(
-            m => m.month === c.month && m.year === c.year
-          )?.label
-        }
-      </Badge>
-    ))}
-  </div>
-</div>
-
-                </CardContent>
-              </Card>
-
-              {/* LOAN DETAILS */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-primary" />
-                    Active Loans ({activeLoans.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {activeLoans.map(loan => (
-                    <div
-                      key={loan.id}
-                      className="bg-muted/50 rounded-lg p-4 space-y-3"
-                    >
-                      <div className="flex justify-between">
-                        <p className="font-semibold">
-                          {formatCurrency(loan.principalAmount)}
-                        </p>
-                        <Badge>{loan.interestRate}% / month</Badge>
-                      </div>
-
-                      <Separator />
-
-                      <div className="grid grid-cols-2 gap-3 text-sm">
-                        <div>
-                          <p className="text-muted-foreground">Start Date</p>
-                          <p>{formatDate(loan.startDate)}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Days Elapsed</p>
-                          <p>{loan.daysElapsed}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Total Paid</p>
-                          <p className="text-success">
-                            {formatCurrency(loan.totalPaid)}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">
-                            Remaining Principal
-                          </p>
-                          <p>{formatCurrency(loan.remainingPrincipal)}</p>
-                        </div>
-                      </div>
-
-                      <Separator />
-
-                      <div className="flex justify-between bg-card p-3 rounded">
-                        <span className="flex items-center gap-2 text-sm">
-                          <TrendingUp className="h-4 w-4 text-warning" />
-                          Pending Interest
-                        </span>
-                        <span className="font-semibold text-warning">
-                          {formatCurrency(loan.pendingInterest)}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between bg-destructive/10 p-3 rounded">
-                        <span className="font-medium">Total Due</span>
-                        <span className="font-bold text-destructive">
-                          {formatCurrency(loan.totalDue)}
-                        </span>
-                      </div>
+                      {collections.length > 12 && (
+                        <button
+                          onClick={() => setShowAllPaid((prev) => !prev)}
+                          className="text-xs font-medium text-primary hover:underline"
+                        >
+                          {showAllPaid ? "Show less" : "Show all"}
+                        </button>
+                      )}
                     </div>
-                  ))}
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {(showAllPaid
+                        ? collections
+                        : collections.slice(0, 12)
+                      ).map((c) => (
+                        <Badge
+                          key={c.id}
+                          className="bg-success/10 text-success border-success/20"
+                        >
+                          {
+                            allMonths.find(
+                              (m) => m.month === c.month && m.year === c.year
+                            )?.label
+                          }
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -361,7 +367,7 @@ const MemberPortal = () => {
 
       {/* FOOTER */}
       <footer className="border-t border-border bg-background/60 backdrop-blur-sm py-4 text-center text-xs text-muted-foreground">
-        <p>© 2025 No. 2 Batabari Youth Club Management System</p>
+        <p>© 2026 No. 2 Batabari Youth Club Management System</p>
         <p className="mt-1">
           Developed by <span className="font-medium">Omesh Rabha</span>
         </p>

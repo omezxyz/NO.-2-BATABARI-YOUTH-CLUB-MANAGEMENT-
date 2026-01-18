@@ -63,27 +63,29 @@
 // };
 import { MonthYear } from '@/types';
 
-// Generate months from January 2023 to current date
+// Generate months from January 2024 to current date
 export const generateMonthsFromStart = (): MonthYear[] => {
   const months: MonthYear[] = [];
   const startDate = new Date(2024, 0, 1); // January 2024
-  const currentDate = new Date();
-  
+  const endDate = new Date(2025, 11, 31); // December 2025
+
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-  
+
   let date = new Date(startDate);
-  while (date <= currentDate) {
+
+  while (date <= endDate) {
     months.push({
       month: date.getMonth() + 1,
       year: date.getFullYear(),
       label: `${monthNames[date.getMonth()]} ${date.getFullYear()}`
     });
+
     date.setMonth(date.getMonth() + 1);
   }
-  
+
   return months;
 };
 
